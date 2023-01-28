@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import {useState} from "react";
+import {makeStyles} from "@mui/material/styles";
+import {Box, Button, TextField} from "@mui/material";
+
+
 
 function App() {
+  const [prompt, setPrompt] = useState("");
+  const [response, setResponse] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await axios.post("http://localhost:8080/chat", {prompt});
+    setResponse(res.data);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Box display="flex" justifyContent="center">
+        <form className="form" onSubmit={handleSubmit}>
+            <TextField
+                variant="filled"
+                color="primary"
+                id="outlined-textarea"
+                sx={{background: "#fff"}}
+                label="Your message:"
+                multiline
+                maxRows={20}
+            />
+            <Button onClick={handleSubmit} size="large" sx={{height: 55}} type="submit" variant="contained">Send</Button>
+        </form>
+        <p className="response">{response}</p>
+      </Box>
   );
 }
 
